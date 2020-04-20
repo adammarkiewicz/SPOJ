@@ -1,1 +1,1 @@
-# SPOJ
+Sphere Online Judge problems repository.
