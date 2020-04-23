@@ -7,10 +7,10 @@ import (
 	"strconv"
 )
 
-var pregen [1000000]int
+var pregen [100000]int
 
 func main() {
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < 100000; i++ {
 		pregen[i] = exchangeCoin(i)
 	}
 
@@ -29,7 +29,7 @@ func main() {
 }
 
 func exchangeCoin(coin int) int {
-	if coin < 1000000 && pregen[coin] != 0 {
+	if coin < 100000 && pregen[coin] != 0 {
 		return pregen[coin]
 	}
 
