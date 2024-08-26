@@ -1,1 +1,1 @@
-Sphere Online Judge easy problems repository.
+Sphere Online Judge - easy problems.
