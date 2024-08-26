@@ -27,6 +27,4 @@ func main() {
 		z.Mul(x, y)
 		fmt.Println(z.String())
 	}
-
-	return
 }
