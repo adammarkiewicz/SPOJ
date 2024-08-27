@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys, re, time, requests, itertools, threading
+import os, sys, re, time, requests, itertools, threading, subprocess
 from bs4 import BeautifulSoup
 from markdownify import markdownify as md
 
@@ -77,7 +77,7 @@ func readAll(t *testing.T, r io.Reader, c chan<- []byte) {
 }
 
 func inputTestData() []byte {
-    data, err := os.ReadFile("test.in")
+    data, err := os.ReadFile("test.input")
     if err != nil {
         log.Fatalf("unable to read file: %v", err)
     }
@@ -86,7 +86,7 @@ func inputTestData() []byte {
 }
 
 func outputTestData() []byte {
-    data, err := os.ReadFile("test.out")
+    data, err := os.ReadFile("test.output")
     if err != nil {
         log.Fatalf("unable to read file: %v", err)
     }
@@ -97,15 +97,6 @@ func outputTestData() []byte {
 }
 """
 
-def spinning_cursor():
-    spinner = itertools.cycle(['|', '/', '-', '\\'])
-    while not stop_spinning:
-        sys.stdout.write(next(spinner))
-        sys.stdout.flush()
-        
-        sys.stdout.write('\b')
-
-        time.sleep(0.1)
 
 def create_go_project(problem):
     if not re.match(PROBLEM_NAME_REGEX_PATTERN, problem):
@@ -129,7 +120,18 @@ def create_go_project(problem):
 
     soup = BeautifulSoup(response.content, 'html.parser')
 
-    ################### README.dm ###################
+    ################### go.mod ###################
+    command = f"go mod init {problem}"
+    working_directory = problem
+
+    result = subprocess.run(command, shell=True, cwd=working_directory, text=True, capture_output=True)
+    
+    print(result.stdout)
+    print(result.stderr)
+    
+    ################### README.md ###################
+    print(f"create_spoj_proj: creating {problem}\\README.md")
+
     divs = soup.find_all('div', {'class': None, 'id': None, 'style': None})
     readme = md(divs[1].text).replace('\\', '')
     readme_file = problem + '\\' + README_FILENAME
@@ -137,6 +139,8 @@ def create_go_project(problem):
         file.write(readme)
 
     ################### test.input ###################
+    print(f"create_spoj_proj: creating {problem}\\test.input")
+
     input = ""
     strong_inputs = soup.find_all("strong", string="Input:")
     for strong_input in strong_inputs:
@@ -154,6 +158,8 @@ def create_go_project(problem):
         file.write(input)
 
     ################### test.output ###################
+    print(f"create_spoj_proj: creating {problem}\\test.output")
+
     output = ""
     strong_outputs = soup.find_all("strong", string="Output:")
     for strong_output in strong_outputs:
@@ -169,27 +175,19 @@ def create_go_project(problem):
         file.write(output)
 
     ################### main.go ###################
+    print(f"create_spoj_proj: creating {problem}\\main.go")
+
     program_file = problem + '\\' + GO_PROGRAM_FILENAME
     with open(program_file, 'w') as file:
         file.write(GO_PROGRAM_TEMPLATE)
 
     ################### problem_test.go ###################
+    print(f"create_spoj_proj: creating {problem}\\problem_test.go")
+
     problem_test_file = problem + '\\' + GO_PROBLEM_TEST_FILENAME
     with open(problem_test_file, 'w') as file:
         file.write(GO_PROBLEM_TEST)
 
 
-
-stop_spinning = False
-
-spinner_thread = threading.Thread(target=spinning_cursor)
-spinner_thread.start()
-
 problem = sys.argv[1]
 create_go_project(problem)
-
-stop_spinning = True
-spinner_thread.join()
-
-sys.stdout.write(' \n')
-sys.stdout.flush()
