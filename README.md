@@ -1,1 +1,1 @@
-Sphere Online Judge - easy problems.
+Sphere Online Judge - https://pl.spoj.com
