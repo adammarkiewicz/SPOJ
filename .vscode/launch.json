@@ -15,7 +15,7 @@
             ]
         },
         {
-            "name": "Launch Package",
+            "name": "GO Launch Package",
             "type": "go",
             "request": "launch",
             "mode": "auto",
