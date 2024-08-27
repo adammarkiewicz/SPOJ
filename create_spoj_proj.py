@@ -147,7 +147,7 @@ def create_go_project(problem):
         for sibling in strong_input.next_siblings:
             if "Output" in sibling.text:
                 break
-            input += sibling.text.strip() + '\n'
+            input += sibling.text
 
     input = input.replace("\r", "")
     input = input.strip()
@@ -163,7 +163,7 @@ def create_go_project(problem):
     strong_outputs = soup.find_all("strong", string="Output:")
     for strong_output in strong_outputs:
         for sibling in strong_output.next_siblings:
-            output += sibling.text.strip() + '\n'
+            output += sibling.text
 
     output = output.replace("\r", "")
     output = output.strip()
