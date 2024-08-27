@@ -149,7 +149,6 @@ def create_go_project(problem):
                 break
             input += sibling.text.strip() + '\n'
 
-    input = input.replace("\t", " ")
     input = input.replace("\r", "")
     input = input.strip()
 
@@ -166,7 +165,6 @@ def create_go_project(problem):
         for sibling in strong_output.next_siblings:
             output += sibling.text.strip() + '\n'
 
-    output = output.replace("\t", " ")
     output = output.replace("\r", "")
     output = output.strip()
 
